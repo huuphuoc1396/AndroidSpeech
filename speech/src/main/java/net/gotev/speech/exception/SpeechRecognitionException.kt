@@ -7,7 +7,9 @@ import android.speech.SpeechRecognizer
  *
  * @author huuphuoc1396
  */
-class SpeechRecognitionException(val code: Int) : Exception(SpeechRecognitionException.getMessage(code)) {
+class SpeechRecognitionException(
+        val code: Int
+) : Exception(SpeechRecognitionException.getMessage(code)) {
 
     companion object {
         @JvmStatic

@@ -11,9 +11,9 @@ import net.gotev.speech.BuildConfig
  */
 class Logger private constructor() {
 
-    private var mLogLevel = if (BuildConfig.DEBUG) LogLevel.DEBUG else LogLevel.OFF
+    private var logLevel = if (BuildConfig.DEBUG) LogLevel.DEBUG else LogLevel.OFF
 
-    private var mDelegate: LoggerDelegate = DefaultLoggerDelegate()
+    private var delegate: LoggerDelegate = DefaultLoggerDelegate()
 
     enum class LogLevel {
         DEBUG,
@@ -37,7 +37,7 @@ class Logger private constructor() {
 
         fun resetLoggerDelegate() {
             synchronized(Logger::class.java) {
-                SingletonHolder.instance.mDelegate = DefaultLoggerDelegate()
+                SingletonHolder.instance.delegate = DefaultLoggerDelegate()
             }
         }
 
@@ -46,37 +46,37 @@ class Logger private constructor() {
                 throw IllegalArgumentException("delegate MUST not be null!")
 
             synchronized(Logger::class.java) {
-                SingletonHolder.instance.mDelegate = delegate
+                SingletonHolder.instance.delegate = delegate
             }
         }
 
         fun setLogLevel(level: LogLevel) {
             synchronized(Logger::class.java) {
-                SingletonHolder.instance.mLogLevel = level
+                SingletonHolder.instance.logLevel = level
             }
         }
 
         fun error(tag: String, message: String) {
-            if (SingletonHolder.instance.mLogLevel <= LogLevel.ERROR) {
-                SingletonHolder.instance.mDelegate.error(tag, message)
+            if (SingletonHolder.instance.logLevel <= LogLevel.ERROR) {
+                SingletonHolder.instance.delegate.error(tag, message)
             }
         }
 
         fun error(tag: String, message: String, exception: Throwable) {
-            if (SingletonHolder.instance.mLogLevel <= LogLevel.ERROR) {
-                SingletonHolder.instance.mDelegate.error(tag, message, exception)
+            if (SingletonHolder.instance.logLevel <= LogLevel.ERROR) {
+                SingletonHolder.instance.delegate.error(tag, message, exception)
             }
         }
 
         fun info(tag: String, message: String) {
-            if (SingletonHolder.instance.mLogLevel <= LogLevel.INFO) {
-                SingletonHolder.instance.mDelegate.info(tag, message)
+            if (SingletonHolder.instance.logLevel <= LogLevel.INFO) {
+                SingletonHolder.instance.delegate.info(tag, message)
             }
         }
 
         fun debug(tag: String, message: String) {
-            if (SingletonHolder.instance.mLogLevel <= LogLevel.DEBUG) {
-                SingletonHolder.instance.mDelegate.debug(tag, message)
+            if (SingletonHolder.instance.logLevel <= LogLevel.DEBUG) {
+                SingletonHolder.instance.delegate.debug(tag, message)
             }
         }
     }

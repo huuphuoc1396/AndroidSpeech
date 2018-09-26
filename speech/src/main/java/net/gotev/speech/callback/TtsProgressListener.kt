@@ -4,8 +4,6 @@ import android.content.Context
 import android.os.Handler
 import android.speech.tts.UtteranceProgressListener
 
-import net.gotev.speech.callback.TextToSpeechCallback
-
 import java.lang.ref.WeakReference
 
 /**
@@ -14,13 +12,13 @@ import java.lang.ref.WeakReference
 
 class TtsProgressListener(
         context: Context,
-        private val mTtsCallbacks: MutableMap<String, TextToSpeechCallback>
+        private val ttsCallbacks: MutableMap<String, TextToSpeechCallback>
 ) : UtteranceProgressListener() {
 
     private val contextWeakReference: WeakReference<Context> = WeakReference(context)
 
     override fun onStart(utteranceId: String) {
-        val callback = mTtsCallbacks[utteranceId]
+        val callback = ttsCallbacks[utteranceId]
         val context = contextWeakReference.get()
 
         if (callback != null && context != null) {
@@ -29,24 +27,24 @@ class TtsProgressListener(
     }
 
     override fun onDone(utteranceId: String) {
-        val callback = mTtsCallbacks[utteranceId]
+        val callback = ttsCallbacks[utteranceId]
         val context = contextWeakReference.get()
         if (callback != null && context != null) {
             Handler(context.mainLooper).post {
                 callback.onCompleted()
-                mTtsCallbacks.remove(utteranceId)
+                ttsCallbacks.remove(utteranceId)
             }
         }
     }
 
     override fun onError(utteranceId: String) {
-        val callback = mTtsCallbacks[utteranceId]
+        val callback = ttsCallbacks[utteranceId]
         val context = contextWeakReference.get()
 
         if (callback != null && context != null) {
             Handler(context.mainLooper).post {
                 callback.onError()
-                mTtsCallbacks.remove(utteranceId)
+                ttsCallbacks.remove(utteranceId)
             }
         }
     }

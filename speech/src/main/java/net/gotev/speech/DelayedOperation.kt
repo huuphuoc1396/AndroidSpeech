@@ -11,9 +11,9 @@ import java.util.TimerTask
 /**
  * @author huuphuoc1396
  */
-class DelayedOperation(private val mContext: Context?, private val mTag: String, private val mDelay: Long) {
-    private var mOperation: Operation? = null
-    private var mTimer: Timer? = null
+class DelayedOperation(private val context: Context, private val delay: Long, private val tag: String) {
+    private var operation: Operation? = null
+    private var timer: Timer? = null
     private var started: Boolean = false
 
     interface Operation {
@@ -22,14 +22,10 @@ class DelayedOperation(private val mContext: Context?, private val mTag: String,
     }
 
     init {
-        if (mContext == null) {
-            throw IllegalArgumentException("Context is null")
-        }
-
-        if (mDelay <= 0) {
+        if (delay <= 0) {
             throw IllegalArgumentException("The delay in milliseconds must be > 0")
         }
-        Logger.debug(LOG_TAG, "created delayed operation with tag: $mTag")
+        Logger.debug(LOG_TAG, "created delayed operation with tag: $tag")
     }
 
     fun start(operation: Operation?) {
@@ -37,8 +33,8 @@ class DelayedOperation(private val mContext: Context?, private val mTag: String,
             throw IllegalArgumentException("The operation must be defined!")
         }
 
-        Logger.debug(LOG_TAG, "starting delayed operation with tag: $mTag")
-        mOperation = operation
+        Logger.debug(LOG_TAG, "starting delayed operation with tag: $tag")
+        this.operation = operation
         cancel()
         started = true
         resetTimer()
@@ -47,26 +43,26 @@ class DelayedOperation(private val mContext: Context?, private val mTag: String,
     fun resetTimer() {
         if (!started) return
 
-        if (mTimer != null) mTimer!!.cancel()
+        timer?.cancel()
 
-        Logger.debug(LOG_TAG, "resetting delayed operation with tag: $mTag")
-        mTimer = Timer()
-        mTimer!!.schedule(object : TimerTask() {
+        Logger.debug(LOG_TAG, "resetting delayed operation with tag: $tag")
+        timer = Timer()
+        timer?.schedule(object : TimerTask() {
             override fun run() {
-                if (mOperation!!.shouldExecuteDelayedOperation()) {
-                    Logger.debug(LOG_TAG, "executing delayed operation with tag: $mTag")
-                    Handler(mContext?.mainLooper).post { mOperation!!.onDelayedOperation() }
+                if (operation?.shouldExecuteDelayedOperation() == true) {
+                    Logger.debug(LOG_TAG, "executing delayed operation with tag: $tag")
+                    Handler(context.mainLooper).post { operation?.onDelayedOperation() }
                 }
                 cancel()
             }
-        }, mDelay)
+        }, delay)
     }
 
     fun cancel() {
-        if (mTimer != null) {
-            Logger.debug(LOG_TAG, "cancelled delayed operation with tag: $mTag")
-            mTimer!!.cancel()
-            mTimer = null
+        timer?.let {
+            Logger.debug(LOG_TAG, "cancelled delayed operation with tag: $tag")
+            it.cancel()
+            timer = null
         }
 
         started = false
