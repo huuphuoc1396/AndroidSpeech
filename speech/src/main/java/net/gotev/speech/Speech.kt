@@ -27,7 +27,7 @@ import java.util.UUID
 /**
  * Helper class to easily work with Android speech recognition.
  *
- * @author Aleksandar Gotev
+ * @author huuphuoc1396
  */
 class Speech private constructor(private val context: Context) {
 
@@ -135,8 +135,10 @@ class Speech private constructor(private val context: Context) {
 
             val result: String
 
-            if (results != null && !results.isEmpty()
-                    && results[0] != null && !results[0].isEmpty()) {
+            if (results != null
+                    && !results.isEmpty()
+                    && results[0] != null
+                    && !results[0].isEmpty()) {
                 result = results[0]
             } else {
                 Logger.info(Speech::class.java.simpleName, "No speech results, getting partial")
@@ -422,7 +424,7 @@ class Speech private constructor(private val context: Context) {
      */
     fun setLocale(locale: Locale): Speech {
         this.locale = locale
-        textToSpeech?.language = locale
+        this.textToSpeech?.language = locale
         return this
     }
 
@@ -436,7 +438,7 @@ class Speech private constructor(private val context: Context) {
      */
     fun setTextToSpeechRate(rate: Float): Speech {
         ttsRate = rate
-        textToSpeech!!.setSpeechRate(rate)
+        textToSpeech?.setSpeechRate(rate)
         return this
     }
 
