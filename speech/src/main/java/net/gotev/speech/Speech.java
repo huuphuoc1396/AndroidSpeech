@@ -11,8 +11,6 @@ import android.speech.tts.TextToSpeech;
 import android.speech.tts.UtteranceProgressListener;
 import android.widget.LinearLayout;
 
-import net.gotev.speech.ui.SpeechProgressView;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -33,7 +31,6 @@ public class Speech {
     private static Speech instance = null;
 
     private SpeechRecognizer mSpeechRecognizer;
-    private SpeechProgressView mProgressView;
     private String mCallingPackage;
     private boolean mPreferOffline = false;
     private boolean mGetPartialResults = true;
@@ -88,8 +85,6 @@ public class Speech {
 
         @Override
         public void onBeginningOfSpeech() {
-            if (mProgressView != null)
-                mProgressView.onBeginningOfSpeech();
 
             mDelayedStopListening.start(new DelayedOperation.Operation() {
                 @Override
@@ -114,8 +109,6 @@ public class Speech {
                         "Unhandled exception in delegate onSpeechRmsChanged", exc);
             }
 
-            if (mProgressView != null)
-                mProgressView.onRmsChanged(v);
         }
 
         @Override
@@ -169,9 +162,6 @@ public class Speech {
                         "Unhandled exception in delegate onSpeechResult", exc);
             }
 
-            if (mProgressView != null)
-                mProgressView.onResultOrOnError();
-
             initSpeechRecognizer(mContext);
         }
 
@@ -188,8 +178,7 @@ public class Speech {
 
         @Override
         public void onEndOfSpeech() {
-            if (mProgressView != null)
-                mProgressView.onEndOfSpeech();
+
         }
 
         @Override
@@ -337,24 +326,11 @@ public class Speech {
     /**
      * Starts voice recognition.
      *
-     * @param delegate delegate which will receive speech recognition events and status
-     * @throws SpeechRecognitionNotAvailable      when speech recognition is not available on the device
-     * @throws GoogleVoiceTypingDisabledException when google voice typing is disabled on the device
-     */
-    public void startListening(final SpeechDelegate delegate)
-            throws SpeechRecognitionNotAvailable, GoogleVoiceTypingDisabledException {
-        startListening(null, delegate);
-    }
-
-    /**
-     * Starts voice recognition.
-     *
-     * @param progressView view in which to draw speech animation
      * @param delegate     delegate which will receive speech recognition events and status
      * @throws SpeechRecognitionNotAvailable      when speech recognition is not available on the device
      * @throws GoogleVoiceTypingDisabledException when google voice typing is disabled on the device
      */
-    public void startListening(final SpeechProgressView progressView, final SpeechDelegate delegate)
+    public void startListening(final SpeechDelegate delegate)
             throws SpeechRecognitionNotAvailable, GoogleVoiceTypingDisabledException {
         if (mIsListening) return;
 
@@ -369,10 +345,6 @@ public class Speech {
             return;
         }
 
-        if (progressView != null && !(progressView.getParent() instanceof LinearLayout))
-            throw new IllegalArgumentException("progressView must be put inside a LinearLayout!");
-
-        mProgressView = progressView;
         mDelegate = delegate;
 
         final Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
@@ -410,7 +382,6 @@ public class Speech {
 
     private void unregisterDelegate() {
         mDelegate = null;
-        mProgressView = null;
     }
 
     private void updateLastActionTimestamp() {
@@ -460,9 +431,6 @@ public class Speech {
             Logger.error(Speech.class.getSimpleName(),
                     "Unhandled exception in delegate onSpeechResult", exc);
         }
-
-        if (mProgressView != null)
-            mProgressView.onResultOrOnError();
 
         // recreate the speech recognizer
         initSpeechRecognizer(mContext);

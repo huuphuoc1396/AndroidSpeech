@@ -17,22 +17,6 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
 
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true"
-        android:visibility="gone"
-        android:id="@+id/linearLayout">
-
-        <net.gotev.speech.ui.SpeechProgressView
-            android:id="@+id/progress"
-            android:layout_width="120dp"
-            android:layout_height="150dp"/>
-
-    </LinearLayout>
-
     <ImageButton
         android:background="@android:color/transparent"
         android:layout_width="64dp"

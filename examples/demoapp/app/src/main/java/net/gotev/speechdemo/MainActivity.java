@@ -3,7 +3,6 @@ package net.gotev.speechdemo;
 import android.Manifest;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -22,7 +21,6 @@ import net.gotev.speech.SpeechDelegate;
 import net.gotev.speech.SpeechRecognitionNotAvailable;
 import net.gotev.speech.SpeechUtil;
 import net.gotev.speech.TextToSpeechCallback;
-import net.gotev.speech.ui.SpeechProgressView;
 import net.gotev.toyproject.R;
 
 import java.util.List;
@@ -33,15 +31,11 @@ public class MainActivity extends AppCompatActivity implements SpeechDelegate {
     private Button speak;
     private TextView text;
     private EditText textToSpeech;
-    private SpeechProgressView progress;
-    private LinearLayout linearLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        linearLayout = (LinearLayout) findViewById(R.id.linearLayout);
 
         button = (ImageButton) findViewById(R.id.button);
         button.setOnClickListener(view -> onButtonClick());
@@ -51,16 +45,6 @@ public class MainActivity extends AppCompatActivity implements SpeechDelegate {
 
         text = (TextView) findViewById(R.id.text);
         textToSpeech = (EditText) findViewById(R.id.textToSpeech) ;
-        progress = (SpeechProgressView) findViewById(R.id.progress);
-
-        int[] colors = {
-                ContextCompat.getColor(this, android.R.color.black),
-                ContextCompat.getColor(this, android.R.color.darker_gray),
-                ContextCompat.getColor(this, android.R.color.black),
-                ContextCompat.getColor(this, android.R.color.holo_orange_dark),
-                ContextCompat.getColor(this, android.R.color.holo_red_dark)
-        };
-        progress.setColors(colors);
     }
 
     @Override
@@ -87,11 +71,10 @@ public class MainActivity extends AppCompatActivity implements SpeechDelegate {
 
     private void onRecordAudioPermissionGranted() {
         button.setVisibility(View.GONE);
-        linearLayout.setVisibility(View.VISIBLE);
 
         try {
             Speech.getInstance().stopTextToSpeech();
-            Speech.getInstance().startListening(progress, MainActivity.this);
+            Speech.getInstance().startListening(MainActivity.this);
 
         } catch (SpeechRecognitionNotAvailable exc) {
             showSpeechNotSupportedDialog();
@@ -138,7 +121,6 @@ public class MainActivity extends AppCompatActivity implements SpeechDelegate {
     public void onSpeechResult(String result) {
 
         button.setVisibility(View.VISIBLE);
-        linearLayout.setVisibility(View.GONE);
 
         text.setText(result);
 
