@@ -1,37 +1,35 @@
-package net.gotev.speech;
-
-import java.util.List;
+package net.gotev.speech.callback
 
 /**
  * Speech delegate interface. It contains the methods to receive speech events.
  *
- * @author Aleksandar Gotev
+ * @author huuphuoc1396
  */
-public interface SpeechDelegate {
+interface SpeechDelegate {
 
     /**
      * Invoked when the speech recognition is started.
      */
-    void onStartOfSpeech();
+    fun onStartOfSpeech()
 
     /**
      * The sound level in the audio stream has changed.
      * There is no guarantee that this method will be called.
      * @param value the new RMS dB value
      */
-    void onSpeechRmsChanged(float value);
+    fun onSpeechRmsChanged(value: Float)
 
     /**
      * Invoked when there are partial speech results.
      * @param results list of strings. This is ensured to be non null and non empty.
      */
-    void onSpeechPartialResults(List<String> results);
+    fun onSpeechPartialResults(results: List<String>)
 
     /**
      * Invoked when there is a speech result
      * @param result string resulting from speech recognition.
-     *               This is ensured to be non null.
+     * This is ensured to be non null.
      */
-    void onSpeechResult(String result);
+    fun onSpeechResult(result: String)
 
 }

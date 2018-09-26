@@ -9,7 +9,14 @@ import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.UtteranceProgressListener;
-import android.widget.LinearLayout;
+
+import net.gotev.speech.callback.TextToSpeechCallback;
+import net.gotev.speech.callback.TtsProgressListener;
+import net.gotev.speech.exception.GoogleVoiceTypingDisabledException;
+import net.gotev.speech.exception.SpeechRecognitionException;
+import net.gotev.speech.exception.SpeechRecognitionNotAvailable;
+import net.gotev.speech.logger.Logger;
+import net.gotev.speech.callback.SpeechDelegate;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -59,15 +66,15 @@ public class Speech {
         public void onInit(final int status) {
             switch (status) {
                 case TextToSpeech.SUCCESS:
-                    Logger.info(LOG_TAG, "TextToSpeech engine successfully started");
+                    Logger.Companion.info(LOG_TAG, "TextToSpeech engine successfully started");
                     break;
 
                 case TextToSpeech.ERROR:
-                    Logger.error(LOG_TAG, "Error while initializing TextToSpeech engine!");
+                    Logger.Companion.error(LOG_TAG, "Error while initializing TextToSpeech engine!");
                     break;
 
                 default:
-                    Logger.error(LOG_TAG, "Unknown TextToSpeech status: " + status);
+                    Logger.Companion.error(LOG_TAG, "Unknown TextToSpeech status: " + status);
                     break;
             }
         }
@@ -105,7 +112,7 @@ public class Speech {
                 if (mDelegate != null)
                     mDelegate.onSpeechRmsChanged(v);
             } catch (final Throwable exc) {
-                Logger.error(Speech.class.getSimpleName(),
+                Logger.Companion.error(Speech.class.getSimpleName(),
                         "Unhandled exception in delegate onSpeechRmsChanged", exc);
             }
 
@@ -130,7 +137,7 @@ public class Speech {
                         mLastPartialResults = partialResults;
                     }
                 } catch (final Throwable exc) {
-                    Logger.error(Speech.class.getSimpleName(),
+                    Logger.Companion.error(Speech.class.getSimpleName(),
                             "Unhandled exception in delegate onSpeechPartialResults", exc);
                 }
             }
@@ -148,7 +155,7 @@ public class Speech {
                     && results.get(0) != null && !results.get(0).isEmpty()) {
                 result = results.get(0);
             } else {
-                Logger.info(Speech.class.getSimpleName(), "No speech results, getting partial");
+                Logger.Companion.info(Speech.class.getSimpleName(), "No speech results, getting partial");
                 result = getPartialResultsAsString();
             }
 
@@ -158,7 +165,7 @@ public class Speech {
                 if (mDelegate != null)
                     mDelegate.onSpeechResult(result.trim());
             } catch (final Throwable exc) {
-                Logger.error(Speech.class.getSimpleName(),
+                Logger.Companion.error(Speech.class.getSimpleName(),
                         "Unhandled exception in delegate onSpeechResult", exc);
             }
 
@@ -167,7 +174,7 @@ public class Speech {
 
         @Override
         public void onError(final int code) {
-            Logger.error(LOG_TAG, "Speech recognition error", new SpeechRecognitionException(code));
+            Logger.Companion.error(LOG_TAG, "Speech recognition error", new SpeechRecognitionException(code));
             returnPartialResultsAndRecreateSpeechRecognizer();
         }
 
@@ -209,7 +216,7 @@ public class Speech {
                 try {
                     mSpeechRecognizer.destroy();
                 } catch (final Throwable exc) {
-                    Logger.debug(Speech.class.getSimpleName(),
+                    Logger.Companion.debug(Speech.class.getSimpleName(),
                             "Non-Fatal error while destroying speech. " + exc.getMessage());
                 } finally {
                     mSpeechRecognizer = null;
@@ -292,7 +299,7 @@ public class Speech {
             try {
                 mSpeechRecognizer.stopListening();
             } catch (final Exception exc) {
-                Logger.error(getClass().getSimpleName(), "Warning while de-initing speech recognizer", exc);
+                Logger.Companion.error(getClass().getSimpleName(), "Warning while de-initing speech recognizer", exc);
             }
         }
 
@@ -302,7 +309,7 @@ public class Speech {
                 mTextToSpeech.stop();
                 mTextToSpeech.shutdown();
             } catch (final Exception exc) {
-                Logger.error(getClass().getSimpleName(), "Warning while de-initing text to speech", exc);
+                Logger.Companion.error(getClass().getSimpleName(), "Warning while de-initing text to speech", exc);
             }
         }
 
@@ -341,7 +348,7 @@ public class Speech {
             throw new IllegalArgumentException("delegate must be defined!");
 
         if (throttleAction()) {
-            Logger.debug(getClass().getSimpleName(), "Hey man calm down! Throttling start to prevent disaster!");
+            Logger.Companion.debug(getClass().getSimpleName(), "Hey man calm down! Throttling start to prevent disaster!");
             return;
         }
 
@@ -374,7 +381,7 @@ public class Speech {
             if (mDelegate != null)
                 mDelegate.onStartOfSpeech();
         } catch (final Throwable exc) {
-            Logger.error(Speech.class.getSimpleName(),
+            Logger.Companion.error(Speech.class.getSimpleName(),
                     "Unhandled exception in delegate onStartOfSpeech", exc);
         }
 
@@ -400,7 +407,7 @@ public class Speech {
         if (!mIsListening) return;
 
         if (throttleAction()) {
-            Logger.debug(getClass().getSimpleName(), "Hey man calm down! Throttling stop to prevent disaster!");
+            Logger.Companion.debug(getClass().getSimpleName(), "Hey man calm down! Throttling stop to prevent disaster!");
             return;
         }
 
@@ -428,7 +435,7 @@ public class Speech {
             if (mDelegate != null)
                 mDelegate.onSpeechResult(getPartialResultsAsString());
         } catch (final Throwable exc) {
-            Logger.error(Speech.class.getSimpleName(),
+            Logger.Companion.error(Speech.class.getSimpleName(),
                     "Unhandled exception in delegate onSpeechResult", exc);
         }
 

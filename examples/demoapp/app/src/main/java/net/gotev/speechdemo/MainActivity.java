@@ -5,22 +5,22 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tbruyelle.rxpermissions.RxPermissions;
 
-import net.gotev.speech.GoogleVoiceTypingDisabledException;
+import net.gotev.speech.exception.GoogleVoiceTypingDisabledException;
 import net.gotev.speech.Speech;
-import net.gotev.speech.SpeechDelegate;
-import net.gotev.speech.SpeechRecognitionNotAvailable;
+import net.gotev.speech.callback.SpeechDelegate;
+import net.gotev.speech.exception.SpeechRecognitionNotAvailable;
 import net.gotev.speech.SpeechUtil;
-import net.gotev.speech.TextToSpeechCallback;
+import net.gotev.speech.callback.TextToSpeechCallback;
 import net.gotev.toyproject.R;
 
 import java.util.List;
@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity implements SpeechDelegate {
         speak.setOnClickListener(view -> onSpeakClick());
 
         text = (TextView) findViewById(R.id.text);
-        textToSpeech = (EditText) findViewById(R.id.textToSpeech) ;
+        textToSpeech = (EditText) findViewById(R.id.textToSpeech);
     }
 
     @Override
@@ -114,7 +114,7 @@ public class MainActivity extends AppCompatActivity implements SpeechDelegate {
 
     @Override
     public void onSpeechRmsChanged(float value) {
-        //Log.d(getClass().getSimpleName(), "Speech recognition rms is now " + value +  "dB");
+        Log.d(getClass().getSimpleName(), "Speech recognition rms is now " + value + "dB");
     }
 
     @Override
@@ -144,9 +144,9 @@ public class MainActivity extends AppCompatActivity implements SpeechDelegate {
         DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                switch (which){
+                switch (which) {
                     case DialogInterface.BUTTON_POSITIVE:
-                        SpeechUtil.redirectUserToGoogleAppOnPlayStore(MainActivity.this);
+                        SpeechUtil.INSTANCE.redirectUserToGoogleAppOnPlayStore(MainActivity.this);
                         break;
 
                     case DialogInterface.BUTTON_NEGATIVE:
