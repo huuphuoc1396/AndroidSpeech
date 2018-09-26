@@ -18,6 +18,7 @@ import net.gotev.speech.callback.SpeechDelegate
 import net.gotev.speech.exception.SpeechRecognitionNotAvailable
 import net.gotev.speech.SpeechUtil
 import net.gotev.speech.callback.TextToSpeechCallback
+import net.gotev.speech.exception.SpeechRecognitionException
 import net.gotev.toyproject.R
 
 class MainActivity : AppCompatActivity(), SpeechDelegate {
@@ -26,8 +27,6 @@ class MainActivity : AppCompatActivity(), SpeechDelegate {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-        Speech.getInstance().setTransitionMinimumDelay(0)
 
         startSpeech.setOnClickListener { startSpeech() }
         speak.setOnClickListener { speak() }
@@ -59,9 +58,6 @@ class MainActivity : AppCompatActivity(), SpeechDelegate {
     }
 
     private fun onRecordAudioPermissionGranted() {
-        startSpeech.visibility = View.GONE
-        waveView.visibility = View.VISIBLE
-
         try {
             Speech.getInstance().stopTextToSpeech()
             Speech.getInstance().startListening(this@MainActivity)
@@ -97,7 +93,7 @@ class MainActivity : AppCompatActivity(), SpeechDelegate {
     }
 
     override fun onStartOfSpeech() {
-
+        showViewListening(true)
     }
 
     override fun onSpeechRmsChanged(value: Float) {
@@ -106,10 +102,7 @@ class MainActivity : AppCompatActivity(), SpeechDelegate {
     }
 
     override fun onSpeechResult(result: String) {
-
-        startSpeech.visibility = View.VISIBLE
-        waveView.visibility = View.GONE
-
+        showViewListening(false)
         text.text = result
 
         if (result.isEmpty()) {
@@ -124,6 +117,21 @@ class MainActivity : AppCompatActivity(), SpeechDelegate {
         text.text = ""
         for (partial in results) {
             text.append("$partial ")
+        }
+    }
+
+    override fun onSpeechError(exception: SpeechRecognitionException) {
+        Toast.makeText(this, exception.message, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun showViewListening(isSpeech: Boolean) {
+
+        if (isSpeech) {
+            startSpeech.visibility = View.GONE
+            waveView.visibility = View.VISIBLE
+        } else {
+            startSpeech.visibility = View.VISIBLE
+            waveView.visibility = View.GONE
         }
     }
 
@@ -149,7 +157,7 @@ class MainActivity : AppCompatActivity(), SpeechDelegate {
         val builder = AlertDialog.Builder(this)
         builder.setMessage(R.string.enable_google_voice_typing)
                 .setCancelable(false)
-                .setPositiveButton(R.string.yes) { dialogInterface, i ->
+                .setPositiveButton(R.string.yes) { _, _ ->
                     // do nothing
                 }
                 .show()

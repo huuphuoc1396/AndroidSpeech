@@ -56,7 +56,7 @@ class Speech private constructor(private val context: Context) {
     private var ttsPitch = 1.0f
     private var ttsQueueMode = TextToSpeech.QUEUE_FLUSH
     private var stopListeningDelayInMs: Long = 4000
-    private var transitionMinimumDelay: Long = 1200
+    private var transitionMinimumDelay: Long = 0
     private var lastActionTimestamp: Long = 0
     private var lastPartialResults: List<String>? = null
 
@@ -158,7 +158,9 @@ class Speech private constructor(private val context: Context) {
         }
 
         override fun onError(code: Int) {
-            Logger.error(LOG_TAG, "Speech recognition error", SpeechRecognitionException(code))
+            val exception = SpeechRecognitionException(code)
+            Logger.error(LOG_TAG, "Speech recognition error", exception)
+            delegate?.onSpeechError(exception)
             returnPartialResultsAndRecreateSpeechRecognizer()
         }
 

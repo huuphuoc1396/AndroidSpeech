@@ -1,5 +1,7 @@
 package net.gotev.speech.callback
 
+import net.gotev.speech.exception.SpeechRecognitionException
+
 /**
  * Speech delegate interface. It contains the methods to receive speech events.
  *
@@ -31,5 +33,11 @@ interface SpeechDelegate {
      * This is ensured to be non null.
      */
     fun onSpeechResult(result: String)
+
+    /**
+     * Invoked when there is a speech error
+     * @param exception SpeechRecognitionException when an error occurs
+     */
+    fun onSpeechError(exception: SpeechRecognitionException)
 
 }
