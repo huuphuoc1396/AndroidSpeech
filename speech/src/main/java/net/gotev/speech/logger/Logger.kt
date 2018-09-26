@@ -35,12 +35,14 @@ class Logger private constructor() {
 
     companion object {
 
+        @JvmStatic
         fun resetLoggerDelegate() {
             synchronized(Logger::class.java) {
                 SingletonHolder.instance.delegate = DefaultLoggerDelegate()
             }
         }
 
+        @JvmStatic
         fun setLoggerDelegate(delegate: LoggerDelegate?) {
             if (delegate == null)
                 throw IllegalArgumentException("delegate MUST not be null!")
@@ -50,30 +52,35 @@ class Logger private constructor() {
             }
         }
 
+        @JvmStatic
         fun setLogLevel(level: LogLevel) {
             synchronized(Logger::class.java) {
                 SingletonHolder.instance.logLevel = level
             }
         }
 
+        @JvmStatic
         fun error(tag: String, message: String) {
             if (SingletonHolder.instance.logLevel <= LogLevel.ERROR) {
                 SingletonHolder.instance.delegate.error(tag, message)
             }
         }
 
+        @JvmStatic
         fun error(tag: String, message: String, exception: Throwable) {
             if (SingletonHolder.instance.logLevel <= LogLevel.ERROR) {
                 SingletonHolder.instance.delegate.error(tag, message, exception)
             }
         }
 
+        @JvmStatic
         fun info(tag: String, message: String) {
             if (SingletonHolder.instance.logLevel <= LogLevel.INFO) {
                 SingletonHolder.instance.delegate.info(tag, message)
             }
         }
 
+        @JvmStatic
         fun debug(tag: String, message: String) {
             if (SingletonHolder.instance.logLevel <= LogLevel.DEBUG) {
                 SingletonHolder.instance.delegate.debug(tag, message)

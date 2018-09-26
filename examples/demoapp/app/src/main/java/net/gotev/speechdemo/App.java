@@ -14,6 +14,6 @@ public class App extends Application {
         super.onCreate();
 
         Speech.init(this, getPackageName());
-        Logger.Companion.setLogLevel(Logger.LogLevel.DEBUG);
+        Logger.setLogLevel(Logger.LogLevel.DEBUG);
     }
 }
