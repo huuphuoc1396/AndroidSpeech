@@ -1,9 +1,8 @@
 package net.gotev.speechdemo
 
 import android.app.Application
-
-import net.gotev.speech.logger.Logger
 import net.gotev.speech.Speech
+import net.gotev.speech.logger.Logger
 
 /**
  * @author Aleksandar Gotev

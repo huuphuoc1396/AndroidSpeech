@@ -8,17 +8,15 @@ import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
 import android.widget.Toast
-
 import com.tbruyelle.rxpermissions.RxPermissions
 import kotlinx.android.synthetic.main.activity_main.*
-
-import net.gotev.speech.exception.GoogleVoiceTypingDisabledException
 import net.gotev.speech.Speech
-import net.gotev.speech.callback.SpeechDelegate
-import net.gotev.speech.exception.SpeechRecognitionNotAvailable
 import net.gotev.speech.SpeechUtil
+import net.gotev.speech.callback.SpeechDelegate
 import net.gotev.speech.callback.TextToSpeechCallback
+import net.gotev.speech.exception.GoogleVoiceTypingDisabledException
 import net.gotev.speech.exception.SpeechRecognitionException
+import net.gotev.speech.exception.SpeechRecognitionNotAvailable
 import net.gotev.toyproject.R
 
 class MainActivity : AppCompatActivity(), SpeechDelegate {

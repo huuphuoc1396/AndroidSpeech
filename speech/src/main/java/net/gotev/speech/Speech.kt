@@ -9,20 +9,14 @@ import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
 import android.speech.tts.TextToSpeech
 import android.speech.tts.UtteranceProgressListener
-
+import net.gotev.speech.callback.SpeechDelegate
 import net.gotev.speech.callback.TextToSpeechCallback
 import net.gotev.speech.callback.TtsProgressListener
 import net.gotev.speech.exception.GoogleVoiceTypingDisabledException
 import net.gotev.speech.exception.SpeechRecognitionException
 import net.gotev.speech.exception.SpeechRecognitionNotAvailable
 import net.gotev.speech.logger.Logger
-import net.gotev.speech.callback.SpeechDelegate
-
-import java.util.ArrayList
-import java.util.Date
-import java.util.HashMap
-import java.util.Locale
-import java.util.UUID
+import java.util.*
 
 /**
  * Helper class to easily work with Android speech recognition.
